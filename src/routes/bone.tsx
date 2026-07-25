@@ -201,6 +201,14 @@ function Page() {
                 checked={form.recentGrowthSpurt}
                 onChange={(v) => set("recentGrowthSpurt", v)}
               />
+              {form.sex === "female" && form.age >= 10 && (
+                <Toggle
+                  label="月経不順・無月経がある（3か月以上）"
+                  sub="女性アスリートの三主徴 / REDs のサイン。疲労骨折リスクが顕著に上昇します"
+                  checked={!!form.menstrualIrregularity}
+                  onChange={(v) => set("menstrualIrregularity", v)}
+                />
+              )}
             </div>
           )}
 
