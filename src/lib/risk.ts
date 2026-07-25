@@ -113,8 +113,16 @@ export interface Equipment {
   equipmentFitsPoorly?: boolean;
 }
 
+export type Sex = "male" | "female";
+
+export const SEX_LABELS: Record<Sex, string> = {
+  male: "男子",
+  female: "女子",
+};
+
 export interface Input {
   age: number;            // 歳
+  sex: Sex;               // 性別（生物学的性）
   height: number;         // cm
   weight: number;         // kg
   sport: Sport;
@@ -124,6 +132,7 @@ export interface Input {
   pitchesPerDay?: number; // 野球のみ: 1日投球数
   hasPain: boolean;       // 痛みや違和感あり
   recentGrowthSpurt: boolean; // 直近半年で急激な身長増加
+  menstrualIrregularity?: boolean; // 女子: 無月経/月経不順（3か月以上）
   equipment?: Equipment;
 }
 
