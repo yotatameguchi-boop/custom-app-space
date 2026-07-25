@@ -74,7 +74,7 @@ function Page() {
         <div className="mx-auto max-w-3xl px-5 pt-12 pb-10 md:pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-wide backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--ocean-light)]" />
-            RHYTHM PLAN
+            リズムプラン
           </div>
           <h1 className="mt-5 text-3xl leading-[1.2] md:text-5xl">
             生活リズムに、
