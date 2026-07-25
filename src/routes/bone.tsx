@@ -139,6 +139,10 @@ function Page() {
             </div>
           )}
 
+          {current.id === "equipment" && (
+            <EquipmentSection sport={form.sport} eq={form.equipment ?? {}} setEq={setEq} />
+          )}
+
           {current.id === "training" && (
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="週の練習時間" suffix="時間">
