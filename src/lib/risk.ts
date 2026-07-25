@@ -757,6 +757,9 @@ export function calculateRisk(i: Input): Result {
   // 道具評価
   evaluateEquipment(i, factors, recs);
 
+  // 性差評価
+  evaluateSex(i, factors, recs);
+
   const totalScore = Math.max(0, factors.reduce((s, f) => s + f.score, 0));
 
   let level: RiskLevel;
