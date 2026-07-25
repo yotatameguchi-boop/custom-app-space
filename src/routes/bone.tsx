@@ -272,6 +272,34 @@ function Page() {
                   ))}
                 </ul>
               </div>
+
+              <div className="rounded-2xl border bg-card p-5">
+                <h3 className="text-sm font-bold">参考にしたガイドライン・出典</h3>
+                <ul className="mt-3 space-y-3">
+                  {SOURCES.map((s, i) => (
+                    <li key={i} className="text-sm">
+                      <div className="font-semibold text-foreground">
+                        {s.title}
+                        <span className="ml-2 text-[11px] font-normal text-muted-foreground">{s.organization}</span>
+                      </div>
+                      <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{s.description}</p>
+                      {s.url && (
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-1 inline-block text-[11px] text-[color:var(--ocean-mid)] underline hover:opacity-80"
+                        >
+                          公式サイトを開く
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+                  本アプリの推定はこれらの公開ガイドラインをもとにしたスクリーニング目安であり、医学的診断ではありません。痛みや違和感がある場合は、必ず整形外科（スポーツ整形）を受診してください。
+                </p>
+              </div>
             </div>
           )}
         </section>
