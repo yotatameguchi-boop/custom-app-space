@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import {
+  GLOSSARY,
   SPORT_LABELS,
   calculateRisk,
   type Equipment,
@@ -30,11 +31,14 @@ const RISK_TEXT: Record<RiskLevel, string> = {
 type StepId = "profile" | "equipment" | "training" | "signals" | "result";
 const STEPS: { id: StepId; label: string; title: string; sub: string }[] = [
   { id: "profile", label: "01", title: "お子さまの基本情報", sub: "年齢・体格・スポーツを入力してください" },
-  { id: "equipment", label: "02", title: "使用している道具", sub: "道具の種類・重量が骨端線負荷に影響します" },
+  { id: "equipment", label: "02", title: "使用している道具", sub: "同じ競技でも道具で骨端線負荷は大きく変わります" },
   { id: "training", label: "03", title: "練習量", sub: "週あたりの負荷を確認します" },
   { id: "signals", label: "04", title: "身体のサイン", sub: "痛みや成長スパートの有無" },
   { id: "result", label: "05", title: "リスク結果", sub: "スコアと推奨アクション" },
 ];
+
+// 用語キーを長い順に並べておく（貪欲マッチ用）
+const GLOSSARY_KEYS = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
 
 function Page() {
   const [form, setForm] = useState<Input>({
@@ -49,9 +53,10 @@ function Page() {
     hasPain: false,
     recentGrowthSpurt: false,
     equipment: {
-      ballType: "soft",
+      ballType: "softJ",
       batType: "metal",
       batWeightG: 650,
+      throwsBreakingBall: false,
       equipmentFitsPoorly: false,
     },
   });
@@ -83,6 +88,9 @@ function Page() {
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/85 md:text-base">
             日本臨床スポーツ医学会・投球制限ガイドラインに基づき、
             オーバーユースのリスクを段階的にチェックします。
+          </p>
+          <p className="mt-3 text-[11px] text-white/70">
+            医学用語は<span className="mx-0.5 rounded bg-white/15 px-1.5 py-0.5">下線</span>付きで表示。タップで説明が開きます。
           </p>
         </div>
       </header>
@@ -134,13 +142,13 @@ function Page() {
                   onChange={(e) => set("weight", +e.target.value)} className={inputCls} />
               </Field>
               <div className="sm:col-span-2 rounded-xl bg-secondary/70 p-3 text-xs text-secondary-foreground">
-                現在の BMI: <span className="font-bold">{result.bmi.toFixed(1)}</span>
+                現在の <TermSpan term="BMI" />: <span className="font-bold">{result.bmi.toFixed(1)}</span>
               </div>
             </div>
           )}
 
           {current.id === "equipment" && (
-            <EquipmentSection sport={form.sport} eq={form.equipment ?? {}} setEq={setEq} />
+            <EquipmentSection sport={form.sport} eq={form.equipment ?? {}} setEq={setEq} age={form.age} />
           )}
 
           {current.id === "training" && (
@@ -202,7 +210,9 @@ function Page() {
                   <div className={`h-full ${RISK_BG[result.level]} transition-all`}
                     style={{ width: `${Math.min(100, result.totalScore)}%` }} />
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-white/90">{result.headline}</p>
+                <p className="mt-3 text-sm leading-relaxed text-white/90">
+                  <TermText text={result.headline} onLight />
+                </p>
               </div>
 
               <div>
@@ -211,7 +221,7 @@ function Page() {
                   {result.vulnerableSites.map((s) => (
                     <li key={s} className="flex items-center gap-2 rounded-xl border bg-muted/40 px-3 py-2 text-sm">
                       <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ocean-mid)]" />
-                      {s}
+                      <TermText text={s} />
                     </li>
                   ))}
                 </ul>
@@ -228,12 +238,20 @@ function Page() {
                     {result.factors.map((f) => (
                       <li key={f.label} className="rounded-xl border bg-card p-3">
                         <div className="flex items-start justify-between gap-3">
-                          <span className="text-sm font-semibold">{f.label}</span>
-                          <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold text-white ${RISK_BG[result.level]}`}>
-                            +{f.score}
+                          <span className="text-sm font-semibold">
+                            <TermText text={f.label} />
+                          </span>
+                          <span
+                            className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold text-white ${
+                              f.score < 0 ? "bg-risk-low" : RISK_BG[result.level]
+                            }`}
+                          >
+                            {f.score >= 0 ? `+${f.score}` : f.score}
                           </span>
                         </div>
-                        <p className="mt-1 text-xs text-muted-foreground">{f.detail}</p>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                          <TermText text={f.detail} />
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -248,7 +266,7 @@ function Page() {
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
                         {i + 1}
                       </span>
-                      <span className="leading-relaxed">{r}</span>
+                      <span className="leading-relaxed"><TermText text={r} /></span>
                     </li>
                   ))}
                 </ul>
@@ -296,15 +314,18 @@ const inputCls =
   "mt-1.5 w-full rounded-xl border bg-background px-3 py-2.5 text-sm outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/25";
 
 function Field({
-  label, suffix, children,
-}: { label: string; suffix?: string; children: React.ReactNode }) {
+  label, suffix, children, hint,
+}: { label: string; suffix?: string; children: React.ReactNode; hint?: string }) {
   return (
     <label className="block">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold tracking-wide text-foreground">{label}</span>
+        <span className="text-xs font-semibold tracking-wide text-foreground">
+          <TermText text={label} />
+        </span>
         {suffix && <span className="text-[11px] text-muted-foreground">{suffix}</span>}
       </div>
       {children}
+      {hint && <p className="mt-1 text-[11px] text-muted-foreground"><TermText text={hint} /></p>}
     </label>
   );
 }
@@ -321,8 +342,8 @@ function Toggle({
       }`}
     >
       <div>
-        <div className="text-sm font-semibold">{label}</div>
-        {sub && <div className="mt-0.5 text-xs text-muted-foreground">{sub}</div>}
+        <div className="text-sm font-semibold"><TermText text={label} /></div>
+        {sub && <div className="mt-0.5 text-xs text-muted-foreground"><TermText text={sub} /></div>}
       </div>
       <span
         className={`relative h-6 w-11 shrink-0 rounded-full transition ${
@@ -339,37 +360,128 @@ function Toggle({
   );
 }
 
+// ============================================================
+// 用語ツールチップ
+// ============================================================
+function TermSpan({ term, onLight }: { term: string; onLight?: boolean }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  const def = GLOSSARY[term];
+
+  useEffect(() => {
+    if (!open) return;
+    const h = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [open]);
+
+  if (!def) return <>{term}</>;
+
+  return (
+    <span ref={ref} className="relative inline-block">
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); e.preventDefault(); setOpen((v) => !v); }}
+        className={`cursor-help font-semibold underline decoration-dotted underline-offset-2 ${
+          onLight
+            ? "text-white decoration-white/60 hover:decoration-white"
+            : "text-[color:var(--ocean-mid)] decoration-[color:var(--ocean-mid)]/60 hover:decoration-[color:var(--ocean-mid)]"
+        }`}
+        aria-expanded={open}
+      >
+        {term}
+      </button>
+      {open && (
+        <span
+          role="tooltip"
+          className="absolute left-0 top-full z-30 mt-1.5 block w-64 rounded-lg border bg-card p-3 text-left text-[11px] leading-relaxed text-card-foreground shadow-lift"
+        >
+          <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[color:var(--ocean-mid)]">
+            {term}
+          </span>
+          {def}
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** 文中の用語をクリック可能なチップに変換 */
+function TermText({ text, onLight }: { text: string; onLight?: boolean }) {
+  const nodes: React.ReactNode[] = [];
+  let i = 0;
+  let key = 0;
+  while (i < text.length) {
+    let matched: string | null = null;
+    for (const k of GLOSSARY_KEYS) {
+      if (text.startsWith(k, i)) { matched = k; break; }
+    }
+    if (matched) {
+      nodes.push(<TermSpan key={key++} term={matched} onLight={onLight} />);
+      i += matched.length;
+    } else {
+      // 次のマッチまでプレーンテキストを積む
+      let j = i + 1;
+      while (j < text.length) {
+        let hit = false;
+        for (const k of GLOSSARY_KEYS) if (text.startsWith(k, j)) { hit = true; break; }
+        if (hit) break;
+        j++;
+      }
+      nodes.push(<span key={key++}>{text.slice(i, j)}</span>);
+      i = j;
+    }
+  }
+  return <>{nodes}</>;
+}
+
+// ============================================================
+// 道具入力（競技別）
+// ============================================================
 function EquipmentSection({
-  sport, eq, setEq,
+  sport, eq, setEq, age,
 }: {
   sport: Sport;
   eq: Equipment;
   setEq: <K extends keyof Equipment>(k: K, v: Equipment[K]) => void;
+  age: number;
 }) {
   return (
     <div className="space-y-5">
       {sport === "baseball" && (
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="ボール種別">
-            <select value={eq.ballType ?? "soft"}
-              onChange={(e) => setEq("ballType", e.target.value as "soft" | "hard")} className={inputCls}>
-              <option value="soft">軟式</option>
-              <option value="hard">硬式</option>
-            </select>
-          </Field>
-          <Field label="バット種別">
-            <select value={eq.batType ?? "metal"}
-              onChange={(e) => setEq("batType", e.target.value as "wood" | "metal" | "composite")} className={inputCls}>
-              <option value="wood">木製</option>
-              <option value="metal">金属</option>
-              <option value="composite">複合（カーボン等）</option>
-            </select>
-          </Field>
-          <Field label="バット重量" suffix="g">
-            <input type="number" min={300} max={1200} value={eq.batWeightG ?? 0}
-              onChange={(e) => setEq("batWeightG", +e.target.value)} className={inputCls} />
-          </Field>
-        </div>
+        <>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="ボール種別" hint="軟式J＜軟式M＜準硬式＜硬式 の順で骨端線負荷が大きくなります">
+              <select value={eq.ballType ?? "softJ"}
+                onChange={(e) => setEq("ballType", e.target.value as NonNullable<Equipment["ballType"]>)} className={inputCls}>
+                <option value="softJ">軟式J号（小学生用）</option>
+                <option value="softM">軟式M号（中学以上）</option>
+                <option value="semi">準硬式（H号）</option>
+                <option value="hard">硬式</option>
+              </select>
+            </Field>
+            <Field label="バット種別">
+              <select value={eq.batType ?? "metal"}
+                onChange={(e) => setEq("batType", e.target.value as "wood" | "metal" | "composite")} className={inputCls}>
+                <option value="wood">木製</option>
+                <option value="metal">金属</option>
+                <option value="composite">複合（カーボン等）</option>
+              </select>
+            </Field>
+            <Field label="バット重量" suffix="g">
+              <input type="number" min={300} max={1200} value={eq.batWeightG ?? 0}
+                onChange={(e) => setEq("batWeightG", +e.target.value)} className={inputCls} />
+            </Field>
+          </div>
+          <Toggle
+            label="変化球を投げる"
+            sub={age <= 15 ? "成長期の肘（上腕骨内側上顆）に高負荷" : "回内・ひねりで肘への負荷が増えます"}
+            checked={!!eq.throwsBreakingBall}
+            onChange={(v) => setEq("throwsBreakingBall", v)}
+          />
+        </>
       )}
 
       {sport === "running" && (
@@ -377,13 +489,21 @@ function EquipmentSection({
           <Field label="シューズ種別">
             <select value={eq.runningShoe ?? "normal"}
               onChange={(e) => setEq("runningShoe", e.target.value as NonNullable<Equipment["runningShoe"]>)} className={inputCls}>
-              <option value="cushioned">クッション厚め</option>
+              <option value="cushioned">クッション厚め（ジュニア向け）</option>
               <option value="normal">標準</option>
               <option value="minimal">薄底・ミニマル</option>
               <option value="spike">スパイク</option>
             </select>
           </Field>
-          <Field label="主な走行路面">
+          <Field label="シューズの摩耗">
+            <select value={eq.shoeWear ?? "normal"}
+              onChange={(e) => setEq("shoeWear", e.target.value as NonNullable<Equipment["shoeWear"]>)} className={inputCls}>
+              <option value="new">新しい（〜300km）</option>
+              <option value="normal">標準（〜700km）</option>
+              <option value="worn">摩耗（700km超・潰れている）</option>
+            </select>
+          </Field>
+          <Field label="主な走行路面" hint="コンクリート＞舗装路＞トラック＞トレイル の順で衝撃が大きい">
             <select value={eq.runningSurface ?? "track"}
               onChange={(e) => setEq("runningSurface", e.target.value as NonNullable<Equipment["runningSurface"]>)} className={inputCls}>
               <option value="track">トラック（タータン）</option>
@@ -406,12 +526,20 @@ function EquipmentSection({
               <option value="soft">SG（軟弱ピッチ）</option>
             </select>
           </Field>
+          <Field label="スタッド材質">
+            <select value={eq.soccerStudMaterial ?? "rubber"}
+              onChange={(e) => setEq("soccerStudMaterial", e.target.value as NonNullable<Equipment["soccerStudMaterial"]>)} className={inputCls}>
+              <option value="rubber">ゴム</option>
+              <option value="plastic">樹脂</option>
+              <option value="metal">金属</option>
+            </select>
+          </Field>
           <Field label="ボールサイズ">
             <select value={eq.soccerBallSize ?? 4}
               onChange={(e) => setEq("soccerBallSize", +e.target.value as 3 | 4 | 5)} className={inputCls}>
-              <option value={3}>3号球</option>
-              <option value={4}>4号球</option>
-              <option value={5}>5号球</option>
+              <option value={3}>3号球（〜低学年）</option>
+              <option value={4}>4号球（小学生）</option>
+              <option value={5}>5号球（中学以上）</option>
             </select>
           </Field>
         </div>
@@ -422,9 +550,17 @@ function EquipmentSection({
           <Field label="ボールサイズ">
             <select value={eq.basketballBallSize ?? 5}
               onChange={(e) => setEq("basketballBallSize", +e.target.value as 5 | 6 | 7)} className={inputCls}>
-              <option value={5}>5号球</option>
-              <option value={6}>6号球</option>
-              <option value={7}>7号球</option>
+              <option value={5}>5号球（ミニバス）</option>
+              <option value={6}>6号球（女子中〜）</option>
+              <option value={7}>7号球（男子中〜）</option>
+            </select>
+          </Field>
+          <Field label="ボール材質">
+            <select value={eq.basketballBallMaterial ?? "composite"}
+              onChange={(e) => setEq("basketballBallMaterial", e.target.value as NonNullable<Equipment["basketballBallMaterial"]>)} className={inputCls}>
+              <option value="rubber">ゴム（屋外用）</option>
+              <option value="composite">合成皮革</option>
+              <option value="leather">天然皮革</option>
             </select>
           </Field>
           <Field label="シューズ状態">
@@ -433,6 +569,15 @@ function EquipmentSection({
               <option value="cushioned">クッション良好</option>
               <option value="normal">標準</option>
               <option value="worn">すり減り・へたり</option>
+            </select>
+          </Field>
+          <Field label="主な床面">
+            <select value={eq.courtSurface ?? "wood"}
+              onChange={(e) => setEq("courtSurface", e.target.value as NonNullable<Equipment["courtSurface"]>)} className={inputCls}>
+              <option value="wood">体育館（木製）</option>
+              <option value="rubber">ゴム系床面</option>
+              <option value="concrete">コンクリート</option>
+              <option value="asphalt">アスファルト</option>
             </select>
           </Field>
         </div>
@@ -448,6 +593,14 @@ function EquipmentSection({
             <input type="number" min={30} max={70} value={eq.stringTensionLb ?? 0}
               onChange={(e) => setEq("stringTensionLb", +e.target.value)} className={inputCls} />
           </Field>
+          <Field label="ストリング素材" hint="ポリエステルストリングは肘負荷が最も大きい">
+            <select value={eq.stringMaterial ?? "nylon"}
+              onChange={(e) => setEq("stringMaterial", e.target.value as NonNullable<Equipment["stringMaterial"]>)} className={inputCls}>
+              <option value="gut">ナチュラルガット</option>
+              <option value="nylon">ナイロン（マルチ含む）</option>
+              <option value="poly">ポリエステル</option>
+            </select>
+          </Field>
         </div>
       )}
 
@@ -455,23 +608,42 @@ function EquipmentSection({
         <div className="space-y-3">
           <Toggle label="パドルを使用する" sub="肩トルクが大幅に増加します"
             checked={!!eq.usesPaddles} onChange={(v) => setEq("usesPaddles", v)} />
+          {eq.usesPaddles && (
+            <Field label="パドルサイズ">
+              <select value={eq.paddleSize ?? "small"}
+                onChange={(e) => setEq("paddleSize", e.target.value as NonNullable<Equipment["paddleSize"]>)} className={inputCls}>
+                <option value="small">小型（フィンガーパドル等）</option>
+                <option value="large">大型（レギュラーサイズ以上）</option>
+              </select>
+            </Field>
+          )}
           <Toggle label="フィンを使用する" sub="足関節・膝の負荷が増えます"
             checked={!!eq.usesFins} onChange={(v) => setEq("usesFins", v)} />
         </div>
       )}
 
       {sport === "gymnastics" && (
-        <Field label="主な種目">
-          <select value={eq.gymApparatus ?? "floor"}
-            onChange={(e) => setEq("gymApparatus", e.target.value as NonNullable<Equipment["gymApparatus"]>)} className={inputCls}>
-            <option value="floor">床</option>
-            <option value="vault">跳馬</option>
-            <option value="bars">鉄棒・段違い平行棒</option>
-            <option value="beam">平均台</option>
-            <option value="rings">つり輪</option>
-            <option value="rhythmic">新体操</option>
-          </select>
-        </Field>
+        <div className="space-y-3">
+          <Field label="主な種目">
+            <select value={eq.gymApparatus ?? "floor"}
+              onChange={(e) => setEq("gymApparatus", e.target.value as NonNullable<Equipment["gymApparatus"]>)} className={inputCls}>
+              <option value="floor">床</option>
+              <option value="vault">跳馬</option>
+              <option value="bars">鉄棒・段違い平行棒</option>
+              <option value="beam">平均台</option>
+              <option value="rings">つり輪</option>
+              <option value="rhythmic">新体操</option>
+            </select>
+          </Field>
+          {(eq.gymApparatus === "bars" || eq.gymApparatus === "rings") && (
+            <Toggle
+              label="グリップ（手掌プロテクター）を使用する"
+              sub="手関節への剪断負荷を軽減します"
+              checked={!!eq.usesGrips}
+              onChange={(v) => setEq("usesGrips", v)}
+            />
+          )}
+        </div>
       )}
 
       {sport === "other" && (
