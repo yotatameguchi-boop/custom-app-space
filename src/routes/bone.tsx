@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useRef, useEffect } from "react";
 import {
   GLOSSARY,
+  SOURCES,
   SPORT_LABELS,
   calculateRisk,
   type Equipment,
