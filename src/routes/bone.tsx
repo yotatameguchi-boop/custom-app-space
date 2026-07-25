@@ -130,6 +130,14 @@ function Page() {
                 <input type="number" min={4} max={18} value={form.age}
                   onChange={(e) => set("age", +e.target.value)} className={inputCls} />
               </Field>
+              <Field label="性別" hint="骨端線閉鎖時期・ACL損傷・疲労骨折リスクに性差があります">
+                <select value={form.sex}
+                  onChange={(e) => set("sex", e.target.value as Sex)} className={inputCls}>
+                  {Object.entries(SEX_LABELS).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+              </Field>
               <Field label="スポーツ">
                 <select value={form.sport}
                   onChange={(e) => set("sport", e.target.value as Sport)} className={inputCls}>
