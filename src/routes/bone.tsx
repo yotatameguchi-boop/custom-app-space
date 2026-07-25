@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import {
   SPORT_LABELS,
   calculateRisk,
+  type Equipment,
   type Input,
   type RiskLevel,
   type Sport,
