@@ -46,6 +46,7 @@ const GLOSSARY_KEYS = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
 function Page() {
   const [form, setForm] = useState<Input>({
     age: 11,
+    sex: "male",
     height: 145,
     weight: 38,
     sport: "baseball",
@@ -55,6 +56,7 @@ function Page() {
     pitchesPerDay: 60,
     hasPain: false,
     recentGrowthSpurt: false,
+    menstrualIrregularity: false,
     equipment: {
       ballType: "softJ",
       batType: "metal",
