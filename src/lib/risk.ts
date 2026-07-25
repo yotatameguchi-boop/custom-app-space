@@ -31,6 +31,30 @@ export const SOURCES: Source[] = [
     organization: "日本陸上競技連盟、日本サッカー協会、日本バスケットボール協会、日本テニス協会、日本水泳連盟、日本体操協会等の公開ガイドライン",
     description: "ボール・バット・ラケット・シューズ・パドルなど、年齢に応じた用具選定と負荷軽減の指針を参考にしています。",
   },
+  {
+    title: "IOC Consensus Statement on Relative Energy Deficiency in Sport (REDs) 2023",
+    organization: "International Olympic Committee (Br J Sports Med 2023;57:1073-1097)",
+    url: "https://bjsm.bmj.com/content/57/17/1073",
+    description: "女性アスリートの相対的エネルギー不足（REDs）、無月経、骨密度低下、疲労骨折リスクの上昇について性差を定量的に示した国際的コンセンサス。",
+  },
+  {
+    title: "ACL損傷の性差に関する疫学研究（Hewett TE ほか）",
+    organization: "American Journal of Sports Medicine / NATA Position Statement",
+    url: "https://journals.sagepub.com/doi/10.1177/0363546504269591",
+    description: "サッカー・バスケットボール等のカッティング競技で、女性は男性の2〜8倍のACL損傷リスクがあることを示す一連の研究。Q角・ホルモン・神経筋制御の性差に起因。",
+  },
+  {
+    title: "成長期の骨端線閉鎖時期に関する骨年齢研究（Greulich-Pyle / TW3法）",
+    organization: "日本小児内分泌学会・日本整形外科学会",
+    url: "https://jspe.umin.jp/",
+    description: "女子は男子より約2年早く思春期・成長スパートを迎え、骨端線閉鎖も1.5〜2年早い（女子14〜16歳、男子16〜18歳）。脆弱年齢帯が性別で異なる。",
+  },
+  {
+    title: "女性アスリートの三主徴（Female Athlete Triad）診療指針",
+    organization: "日本産科婦人科学会・日本臨床スポーツ医学会",
+    url: "https://www.jsog.or.jp/",
+    description: "利用可能エネルギー不足・無月経・骨粗鬆症の三主徴。中高生女性アスリートで疲労骨折リスクが男性の約2〜4倍に上昇することを報告。",
+  },
 ];
 
 export type Sport =
