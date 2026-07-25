@@ -87,11 +87,11 @@ function Page() {
             <span className="text-[color:var(--ocean-light)]">数値で見守る。</span>
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/85 md:text-base">
-            日本臨床スポーツ医学会・投球制限ガイドラインに基づき、
+            全日本野球協会 育成年代投球制限ガイドライン、日本臨床スポーツ医学会 学童・思春期のスポーツ活動指針などを参考に、
             オーバーユースのリスクを段階的にチェックします。
           </p>
           <p className="mt-3 text-[11px] text-white/70">
-            医学用語は<span className="mx-0.5 rounded bg-white/15 px-1.5 py-0.5">下線</span>付きで表示。タップで説明が開きます。
+            医学用語は<span className="mx-0.5 rounded bg-white/15 px-1.5 py-0.5">下線</span>付きで表示。タップで説明が開きます。結果画面には参考ガイドラインも記載しています。
           </p>
         </div>
       </header>
