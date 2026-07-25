@@ -63,7 +63,7 @@ function Page() {
         <div className="mx-auto max-w-2xl px-5 pt-12 pb-14 md:pt-16 md:pb-20">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-medium tracking-wide backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--ocean-light)]" />
-            JUNIOR LOAD CHECKER
+            ジュニア負荷チェッカー
           </div>
           <h1 className="mt-5 text-3xl leading-[1.2] md:text-5xl">
             成長期の骨端線を、

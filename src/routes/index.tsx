@@ -28,7 +28,7 @@ function Hub() {
             to="/bone"
             className="group block rounded-2xl border bg-card p-6 shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
           >
-            <div className="text-[11px] font-bold tracking-wide text-primary">BONE CHECK</div>
+            <div className="text-[11px] font-bold tracking-wide text-primary">骨端線チェック</div>
             <h2 className="mt-2 text-lg font-bold">骨端線チェッカー</h2>
             <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
               成長期の子供のスポーツ活動から、骨端線への負荷リスクをガイドラインに基づいてチェックします。
@@ -40,7 +40,7 @@ function Hub() {
             to="/schedule"
             className="group block rounded-2xl border bg-card p-6 shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
           >
-            <div className="text-[11px] font-bold tracking-wide text-primary">RHYTHM PLAN</div>
+            <div className="text-[11px] font-bold tracking-wide text-primary">リズムプラン</div>
             <h2 className="mt-2 text-lg font-bold">リズムプラン</h2>
             <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
               生活習慣と締切のあるタスクから、2週間分の集中スケジュールを自動生成します。
