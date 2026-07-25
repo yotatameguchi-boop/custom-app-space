@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useRef, useEffect } from "react";
 import {
   GLOSSARY,
+  SEX_LABELS,
   SOURCES,
   SPORT_LABELS,
   calculateRisk,
   type Equipment,
   type Input,
   type RiskLevel,
+  type Sex,
   type Sport,
 } from "@/lib/risk";
 
@@ -44,6 +46,7 @@ const GLOSSARY_KEYS = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
 function Page() {
   const [form, setForm] = useState<Input>({
     age: 11,
+    sex: "male",
     height: 145,
     weight: 38,
     sport: "baseball",
@@ -53,6 +56,7 @@ function Page() {
     pitchesPerDay: 60,
     hasPain: false,
     recentGrowthSpurt: false,
+    menstrualIrregularity: false,
     equipment: {
       ballType: "softJ",
       batType: "metal",
@@ -126,6 +130,14 @@ function Page() {
                 <input type="number" min={4} max={18} value={form.age}
                   onChange={(e) => set("age", +e.target.value)} className={inputCls} />
               </Field>
+              <Field label="性別" hint="骨端線閉鎖時期・ACL損傷・疲労骨折リスクに性差があります">
+                <select value={form.sex}
+                  onChange={(e) => set("sex", e.target.value as Sex)} className={inputCls}>
+                  {Object.entries(SEX_LABELS).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+              </Field>
               <Field label="スポーツ">
                 <select value={form.sport}
                   onChange={(e) => set("sport", e.target.value as Sport)} className={inputCls}>
@@ -189,6 +201,14 @@ function Page() {
                 checked={form.recentGrowthSpurt}
                 onChange={(v) => set("recentGrowthSpurt", v)}
               />
+              {form.sex === "female" && form.age >= 10 && (
+                <Toggle
+                  label="月経不順・無月経がある（3か月以上）"
+                  sub="女性アスリートの三主徴 / REDs のサイン。疲労骨折リスクが顕著に上昇します"
+                  checked={!!form.menstrualIrregularity}
+                  onChange={(v) => set("menstrualIrregularity", v)}
+                />
+              )}
             </div>
           )}
 
