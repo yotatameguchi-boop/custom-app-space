@@ -338,3 +338,154 @@ function Toggle({
     </button>
   );
 }
+
+function EquipmentSection({
+  sport, eq, setEq,
+}: {
+  sport: Sport;
+  eq: Equipment;
+  setEq: <K extends keyof Equipment>(k: K, v: Equipment[K]) => void;
+}) {
+  return (
+    <div className="space-y-5">
+      {sport === "baseball" && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="ボール種別">
+            <select value={eq.ballType ?? "soft"}
+              onChange={(e) => setEq("ballType", e.target.value as "soft" | "hard")} className={inputCls}>
+              <option value="soft">軟式</option>
+              <option value="hard">硬式</option>
+            </select>
+          </Field>
+          <Field label="バット種別">
+            <select value={eq.batType ?? "metal"}
+              onChange={(e) => setEq("batType", e.target.value as "wood" | "metal" | "composite")} className={inputCls}>
+              <option value="wood">木製</option>
+              <option value="metal">金属</option>
+              <option value="composite">複合（カーボン等）</option>
+            </select>
+          </Field>
+          <Field label="バット重量" suffix="g">
+            <input type="number" min={300} max={1200} value={eq.batWeightG ?? 0}
+              onChange={(e) => setEq("batWeightG", +e.target.value)} className={inputCls} />
+          </Field>
+        </div>
+      )}
+
+      {sport === "running" && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="シューズ種別">
+            <select value={eq.runningShoe ?? "normal"}
+              onChange={(e) => setEq("runningShoe", e.target.value as NonNullable<Equipment["runningShoe"]>)} className={inputCls}>
+              <option value="cushioned">クッション厚め</option>
+              <option value="normal">標準</option>
+              <option value="minimal">薄底・ミニマル</option>
+              <option value="spike">スパイク</option>
+            </select>
+          </Field>
+          <Field label="主な走行路面">
+            <select value={eq.runningSurface ?? "track"}
+              onChange={(e) => setEq("runningSurface", e.target.value as NonNullable<Equipment["runningSurface"]>)} className={inputCls}>
+              <option value="track">トラック（タータン）</option>
+              <option value="trail">土・芝・トレイル</option>
+              <option value="road">舗装路（アスファルト）</option>
+              <option value="concrete">コンクリート</option>
+            </select>
+          </Field>
+        </div>
+      )}
+
+      {sport === "soccer" && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="スパイク種別">
+            <select value={eq.soccerStud ?? "ag"}
+              onChange={(e) => setEq("soccerStud", e.target.value as NonNullable<Equipment["soccerStud"]>)} className={inputCls}>
+              <option value="turf">トレシュー（TF）</option>
+              <option value="ag">人工芝用（AG）</option>
+              <option value="firm">FG（固定式・土/天然芝）</option>
+              <option value="soft">SG（軟弱ピッチ）</option>
+            </select>
+          </Field>
+          <Field label="ボールサイズ">
+            <select value={eq.soccerBallSize ?? 4}
+              onChange={(e) => setEq("soccerBallSize", +e.target.value as 3 | 4 | 5)} className={inputCls}>
+              <option value={3}>3号球</option>
+              <option value={4}>4号球</option>
+              <option value={5}>5号球</option>
+            </select>
+          </Field>
+        </div>
+      )}
+
+      {sport === "basketball" && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="ボールサイズ">
+            <select value={eq.basketballBallSize ?? 5}
+              onChange={(e) => setEq("basketballBallSize", +e.target.value as 5 | 6 | 7)} className={inputCls}>
+              <option value={5}>5号球</option>
+              <option value={6}>6号球</option>
+              <option value={7}>7号球</option>
+            </select>
+          </Field>
+          <Field label="シューズ状態">
+            <select value={eq.basketballShoe ?? "normal"}
+              onChange={(e) => setEq("basketballShoe", e.target.value as NonNullable<Equipment["basketballShoe"]>)} className={inputCls}>
+              <option value="cushioned">クッション良好</option>
+              <option value="normal">標準</option>
+              <option value="worn">すり減り・へたり</option>
+            </select>
+          </Field>
+        </div>
+      )}
+
+      {sport === "tennis" && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="ラケット重量" suffix="g">
+            <input type="number" min={180} max={360} value={eq.racketWeightG ?? 0}
+              onChange={(e) => setEq("racketWeightG", +e.target.value)} className={inputCls} />
+          </Field>
+          <Field label="ガット張力" suffix="lb">
+            <input type="number" min={30} max={70} value={eq.stringTensionLb ?? 0}
+              onChange={(e) => setEq("stringTensionLb", +e.target.value)} className={inputCls} />
+          </Field>
+        </div>
+      )}
+
+      {sport === "swimming" && (
+        <div className="space-y-3">
+          <Toggle label="パドルを使用する" sub="肩トルクが大幅に増加します"
+            checked={!!eq.usesPaddles} onChange={(v) => setEq("usesPaddles", v)} />
+          <Toggle label="フィンを使用する" sub="足関節・膝の負荷が増えます"
+            checked={!!eq.usesFins} onChange={(v) => setEq("usesFins", v)} />
+        </div>
+      )}
+
+      {sport === "gymnastics" && (
+        <Field label="主な種目">
+          <select value={eq.gymApparatus ?? "floor"}
+            onChange={(e) => setEq("gymApparatus", e.target.value as NonNullable<Equipment["gymApparatus"]>)} className={inputCls}>
+            <option value="floor">床</option>
+            <option value="vault">跳馬</option>
+            <option value="bars">鉄棒・段違い平行棒</option>
+            <option value="beam">平均台</option>
+            <option value="rings">つり輪</option>
+            <option value="rhythmic">新体操</option>
+          </select>
+        </Field>
+      )}
+
+      {sport === "other" && (
+        <p className="text-sm text-muted-foreground">
+          このスポーツでは道具別の追加評価は行いません。下の共通項目のみ入力してください。
+        </p>
+      )}
+
+      <Toggle
+        label="道具のサイズが体格に合っていない"
+        sub="重すぎる・大きすぎる・グリップが太いなど"
+        checked={!!eq.equipmentFitsPoorly}
+        onChange={(v) => setEq("equipmentFitsPoorly", v)}
+      />
+    </div>
+  );
+}
