@@ -575,6 +575,91 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
   }
 }
 
+// ============================================================
+// 性差による負荷評価
+// 根拠:
+// - IOC REDs Consensus 2023 (Br J Sports Med 2023;57:1073-1097)
+// - Hewett TE et al. Am J Sports Med 2005 — 女性のACL損傷リスク 2〜8倍
+// - 日本小児内分泌学会（骨年齢）— 女子は骨端線閉鎖が男子より1.5〜2年早い
+// - 女性アスリートの三主徴 診療指針 — 疲労骨折 男性の2〜4倍
+// ============================================================
+function evaluateSex(i: Input, factors: Factor[], recs: string[]) {
+  const isFemale = i.sex === "female";
+  const isMale = i.sex === "male";
+
+  // 成長スパートの性差（女子: 10-12歳ピーク / 男子: 12-14歳ピーク）
+  if (isFemale && i.age >= 10 && i.age <= 13) {
+    factors.push({
+      label: "女子の成長スパート期にあたる年齢",
+      score: 8,
+      detail: "女子は男子より約2年早く思春期・成長スパートを迎える（PHV 平均11.5歳）。骨端線の脆弱期がこの年齢帯に集中する（出典: 日本小児内分泌学会 骨年齢基準）。",
+    });
+  }
+  if (isMale && i.age >= 12 && i.age <= 15) {
+    factors.push({
+      label: "男子の成長スパート期にあたる年齢",
+      score: 8,
+      detail: "男子はPHV平均13.5歳。骨端線閉鎖が女子より1.5〜2年遅く、脆弱期間が長い。特にリトルリーグ肩・オスグッドの好発年齢帯（出典: 日本小児内分泌学会）。",
+    });
+  }
+
+  // カッティング・ジャンプ競技での女性ACL/膝リスク
+  if (isFemale && (i.sport === "soccer" || i.sport === "basketball")) {
+    factors.push({
+      label: "女子のジャンプ・カッティング競技",
+      score: 12,
+      detail: "女性はQ角が男性より約5°大きく、着地時の膝外反・ACL損傷リスクが男性の2〜8倍。膝蓋大腿関節障害・シンディング・ラーセンも高頻度（出典: Hewett TE ら Am J Sports Med 2005）。",
+    });
+    recs.push("着地時に膝がつま先より内側に入らないニー・イン対策として、片脚スクワット・体幹強化を週2〜3回導入してください。");
+  }
+
+  // 女性: 疲労骨折・骨密度リスク（持久系・審美系で顕著）
+  if (isFemale && (i.sport === "running" || i.sport === "gymnastics")) {
+    factors.push({
+      label: "女子の疲労骨折高リスク競技",
+      score: 10,
+      detail: "陸上長距離・体操・新体操では利用可能エネルギー不足に陥りやすく、疲労骨折発生率は男性の約2〜4倍。脛骨・中足骨・大腿骨頸部が好発部位（出典: 女性アスリートの三主徴 診療指針）。",
+    });
+    recs.push("体重・体脂肪の過度な制限を避け、エネルギー摂取（特に炭水化物）とカルシウム・ビタミンDを十分に確保してください。");
+  }
+
+  // 女性: 月経不順があれば REDs/三主徴を疑う
+  if (isFemale && i.menstrualIrregularity) {
+    factors.push({
+      label: "月経不順・無月経（3か月以上）",
+      score: 20,
+      detail: "利用可能エネルギー不足による視床下部性無月経の可能性。エストロゲン低下により骨形成が抑制され、疲労骨折・骨端線障害リスクが顕著に上昇する（出典: IOC REDs Consensus 2023）。",
+    });
+    recs.push("婦人科・スポーツ内科の受診を推奨します。体重・食事量の見直しが必要な場合があります。");
+  }
+
+  // 男性: 投球障害・骨端線障害の性差
+  if (isMale && i.sport === "baseball") {
+    factors.push({
+      label: "男子の投球障害好発年齢",
+      score: 5,
+      detail: "リトルリーグ肘（上腕骨内側上顆）・リトルリーグ肩は男児に圧倒的多数。骨端線閉鎖が女子より遅いため、9〜15歳の長期間にわたり脆弱（出典: 日本臨床スポーツ医学会）。",
+    });
+  }
+
+  // 骨端線閉鎖時期の性差 — 高年齢での判定
+  if (isFemale && i.age >= 15) {
+    factors.push({
+      label: "骨端線閉鎖が進む年齢（女子）",
+      score: -3,
+      detail: "女子は15歳前後で主要骨端線の閉鎖が進行し、骨端線由来の障害リスクは低下する（軽減要因）。ただし靭帯・疲労骨折リスクは残存（出典: Greulich-Pyle 骨年齢）。",
+    });
+  }
+  if (isMale && i.age >= 17) {
+    factors.push({
+      label: "骨端線閉鎖が進む年齢（男子）",
+      score: -3,
+      detail: "男子は17歳前後で主要骨端線の閉鎖が進行する（軽減要因）（出典: Greulich-Pyle 骨年齢）。",
+    });
+  }
+}
+
+
 export function calculateRisk(i: Input): Result {
   const factors: Factor[] = [];
   const recs: string[] = [];
