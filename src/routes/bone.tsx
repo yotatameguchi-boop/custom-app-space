@@ -48,11 +48,19 @@ function Page() {
     pitchesPerDay: 60,
     hasPain: false,
     recentGrowthSpurt: false,
+    equipment: {
+      ballType: "soft",
+      batType: "metal",
+      batWeightG: 650,
+      equipmentFitsPoorly: false,
+    },
   });
   const [step, setStep] = useState(0);
   const result = useMemo(() => calculateRisk(form), [form]);
   const set = <K extends keyof Input>(k: K, v: Input[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
+  const setEq = <K extends keyof Equipment>(k: K, v: Equipment[K]) =>
+    setForm((f) => ({ ...f, equipment: { ...(f.equipment ?? {}), [k]: v } }));
 
   const current = STEPS[step];
   const isLast = step === STEPS.length - 1;
