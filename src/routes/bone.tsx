@@ -34,7 +34,7 @@ const RISK_TEXT: Record<RiskLevel, string> = {
 type StepId = "profile" | "equipment" | "training" | "signals" | "result";
 const STEPS: { id: StepId; label: string; title: string; sub: string }[] = [
   { id: "profile", label: "01", title: "お子さまの基本情報", sub: "年齢・体格・スポーツを入力してください" },
-  { id: "equipment", label: "02", title: "使用している道具", sub: "同じ競技でも道具で骨端線負荷は大きく変わります" },
+  { id: "equipment", label: "02", title: "使用している道具", sub: "同じ競技でも道具で骨への負担は大きく変わります" },
   { id: "training", label: "03", title: "練習量", sub: "週あたりの負荷を確認します" },
   { id: "signals", label: "04", title: "身体のサイン", sub: "痛みや成長スパートの有無" },
   { id: "result", label: "05", title: "リスク結果", sub: "スコアと推奨アクション" },
