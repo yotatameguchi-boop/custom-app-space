@@ -6,7 +6,7 @@ export const Route = createFileRoute("/")({
       { title: "アプリ一覧" },
       { name: "description", content: "骨端線チェッカーの入口です。" },
       { property: "og:title", content: "アプリ一覧" },
-      { property: "og:description", content: "骨端線チェッカーの入口ページ。" },
+      { property: "og:description", content: "骨端線チェッカーの入口です。" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

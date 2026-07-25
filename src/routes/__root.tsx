@@ -77,23 +77,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ジュニアロード｜子供の骨端線負荷チェッカー" },
+      { title: "アプリ一覧" },
       {
         name: "description",
         content:
-          "成長期の子供のスポーツ活動から、骨端線（成長軟骨）への負荷リスクをガイドラインに基づいてチェックします。",
+          "骨端線チェッカーの入口です。",
       },
       { name: "author", content: "ジュニアロード" },
-      { property: "og:title", content: "ジュニアロード｜子供の骨端線負荷チェッカー" },
+      { property: "og:title", content: "アプリ一覧" },
       {
         property: "og:description",
         content:
-          "成長期の子供のスポーツ活動から、骨端線（成長軟骨）への負荷リスクをガイドラインに基づいてチェックします。",
+          "骨端線チェッカーの入口です。",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "ジュニアロード｜子供の骨端線負荷チェッカー" },
-      { name: "twitter:description", content: "成長期の子供のスポーツ活動から、骨端線（成長軟骨）への負荷リスクをガイドラインに基づいてチェックします。" },
+      { name: "twitter:title", content: "アプリ一覧" },
+      { name: "twitter:description", content: "骨端線チェッカーの入口です。" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/611b7030-9057-4fb1-8ea6-6aca756f8748/id-preview-203eadb9--ae570438-cd73-436f-9381-083cc2d5532b.lovable.app-1784717122742.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/611b7030-9057-4fb1-8ea6-6aca756f8748/id-preview-203eadb9--ae570438-cd73-436f-9381-083cc2d5532b.lovable.app-1784717122742.png" },
     ],
