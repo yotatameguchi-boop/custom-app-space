@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useRef, useEffect } from "react";
 import {
   GLOSSARY,
+  SEX_LABELS,
   SOURCES,
   SPORT_LABELS,
   calculateRisk,
   type Equipment,
   type Input,
   type RiskLevel,
+  type Sex,
   type Sport,
 } from "@/lib/risk";
 
