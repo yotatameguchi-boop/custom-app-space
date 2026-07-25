@@ -1,8 +1,37 @@
 // 骨端線負荷リスク推定ロジック
-// 出典・参考: 全日本野球協会 育成年代投球制限ガイドライン、
-// 日本臨床スポーツ医学会 学童・思春期のスポーツ活動指針、
-// 各種オーバーユース障害（Little League Elbow, Osgood-Schlatter, Sever, Sinding-Larsen等）の一般的目安。
 // ※本推定はスクリーニング目的の目安であり、医学的診断ではありません。
+
+export interface Source {
+  title: string;
+  organization: string;
+  url?: string;
+  description: string;
+}
+
+export const SOURCES: Source[] = [
+  {
+    title: "育成年代投球制限ガイドライン",
+    organization: "全日本野球協会（野球日本代表 侍ジャパン）",
+    url: "https://www.japan-baseball.jp/",
+    description: "年齢別の1日・週間投球数上限、硬式・軟式ボールの使用区分、変化球導入時期などを参考にしています。",
+  },
+  {
+    title: "学童・思春期のスポーツ活動指針",
+    organization: "日本臨床スポーツ医学会",
+    url: "https://www.jsmclinic.org/",
+    description: "成長期の骨端線への負荷、週間練習量・休養日の目安、オーバーユース障害の予防指針などを参考にしています。",
+  },
+  {
+    title: "小児・思春期スポーツ障害に関する知見",
+    organization: "日本小児整形外科学会・日本スポーツ整形外科学会等の公開情報",
+    description: "Little League Elbow、Osgood-Schlatter、Sever、Sinding-Larsen-Johansson など、骨端線周囲のオーバーユース障害の臨床目安を参考にしています。",
+  },
+  {
+    title: "各競技のジュニア指導・用具規格",
+    organization: "日本陸上競技連盟、日本サッカー協会、日本バスケットボール協会、日本テニス協会、日本水泳連盟、日本体操協会等の公開ガイドライン",
+    description: "ボール・バット・ラケット・シューズ・パドルなど、年齢に応じた用具選定と負荷軽減の指針を参考にしています。",
+  },
+];
 
 export type Sport =
   | "baseball"

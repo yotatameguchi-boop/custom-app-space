@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useRef, useEffect } from "react";
 import {
   GLOSSARY,
+  SOURCES,
   SPORT_LABELS,
   calculateRisk,
   type Equipment,
@@ -86,11 +87,11 @@ function Page() {
             <span className="text-[color:var(--ocean-light)]">数値で見守る。</span>
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/85 md:text-base">
-            日本臨床スポーツ医学会・投球制限ガイドラインに基づき、
+            全日本野球協会 育成年代投球制限ガイドライン、日本臨床スポーツ医学会 学童・思春期のスポーツ活動指針などを参考に、
             オーバーユースのリスクを段階的にチェックします。
           </p>
           <p className="mt-3 text-[11px] text-white/70">
-            医学用語は<span className="mx-0.5 rounded bg-white/15 px-1.5 py-0.5">下線</span>付きで表示。タップで説明が開きます。
+            医学用語は<span className="mx-0.5 rounded bg-white/15 px-1.5 py-0.5">下線</span>付きで表示。タップで説明が開きます。結果画面には参考ガイドラインも記載しています。
           </p>
         </div>
       </header>
@@ -270,6 +271,34 @@ function Page() {
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              <div className="rounded-2xl border bg-card p-5">
+                <h3 className="text-sm font-bold">参考にしたガイドライン・出典</h3>
+                <ul className="mt-3 space-y-3">
+                  {SOURCES.map((s, i) => (
+                    <li key={i} className="text-sm">
+                      <div className="font-semibold text-foreground">
+                        {s.title}
+                        <span className="ml-2 text-[11px] font-normal text-muted-foreground">{s.organization}</span>
+                      </div>
+                      <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{s.description}</p>
+                      {s.url && (
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-1 inline-block text-[11px] text-[color:var(--ocean-mid)] underline hover:opacity-80"
+                        >
+                          公式サイトを開く
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+                  本アプリの推定はこれらの公開ガイドラインをもとにしたスクリーニング目安であり、医学的診断ではありません。痛みや違和感がある場合は、必ず整形外科（スポーツ整形）を受診してください。
+                </p>
               </div>
             </div>
           )}
