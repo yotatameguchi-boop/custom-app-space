@@ -34,7 +34,7 @@ const RISK_TEXT: Record<RiskLevel, string> = {
 type StepId = "profile" | "equipment" | "training" | "signals" | "result";
 const STEPS: { id: StepId; label: string; title: string; sub: string }[] = [
   { id: "profile", label: "01", title: "お子さまの基本情報", sub: "年齢・体格・スポーツを入力してください" },
-  { id: "equipment", label: "02", title: "使用している道具", sub: "同じ競技でも道具で骨端線負荷は大きく変わります" },
+  { id: "equipment", label: "02", title: "使用している道具", sub: "同じ競技でも道具で骨への負担は大きく変わります" },
   { id: "training", label: "03", title: "練習量", sub: "週あたりの負荷を確認します" },
   { id: "signals", label: "04", title: "身体のサイン", sub: "痛みや成長スパートの有無" },
   { id: "result", label: "05", title: "リスク結果", sub: "スコアと推奨アクション" },
@@ -86,16 +86,16 @@ function Page() {
             ジュニア負荷チェッカー
           </div>
           <h1 className="mt-5 text-3xl leading-[1.2] md:text-5xl">
-            成長期の骨端線を、
+            成長期の子どもの
             <br />
-            <span className="text-[color:var(--ocean-light)]">数値で見守る。</span>
+            <span className="text-[color:var(--ocean-light)]">骨への負担をチェック。</span>
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/85 md:text-base">
-            全日本野球協会 育成年代投球制限ガイドライン、日本臨床スポーツ医学会 学童・思春期のスポーツ活動指針などを参考に、
-            オーバーユースのリスクを段階的にチェックします。
+            野球、サッカー、陸上、バスケなど、さまざまなスポーツに対応しています。
+            年齢や性別、使っている道具、練習量から、子どもの骨や関節にかかりすぎていないかを数値で確認できます。
           </p>
           <p className="mt-3 text-[11px] text-white/70">
-            医学用語は<span className="mx-0.5 rounded bg-white/15 px-1.5 py-0.5">下線</span>付きで表示。タップで説明が開きます。結果画面には参考ガイドラインも記載しています。
+            難しい用語は<span className="mx-0.5 rounded bg-white/15 px-1.5 py-0.5">下線</span>付きで表示。タップで説明が開きます。結果画面には参考にしたガイドラインも記載しています。
           </p>
         </div>
       </header>
