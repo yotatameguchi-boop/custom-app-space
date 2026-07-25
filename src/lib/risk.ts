@@ -28,26 +28,34 @@ export const SPORT_LABELS: Record<Sport, string> = {
 // 競技ごとの道具情報（すべて任意）
 export interface Equipment {
   // 野球
-  ballType?: "soft" | "hard";           // 軟式 / 硬式
-  batWeightG?: number;                  // バット重量 g
-  batType?: "wood" | "metal" | "composite"; // 木製 / 金属 / 複合
+  ballType?: "softM" | "softJ" | "semi" | "hard"; // 軟式M/軟式J/準硬式/硬式
+  batWeightG?: number;                             // バット重量 g
+  batType?: "wood" | "metal" | "composite";        // 木製 / 金属 / 複合（カーボン）
+  throwsBreakingBall?: boolean;                    // 変化球を投げる
   // 陸上
   runningShoe?: "cushioned" | "normal" | "minimal" | "spike"; // クッション種別
   runningSurface?: "track" | "road" | "trail" | "concrete";   // 走行路面
+  shoeWear?: "new" | "normal" | "worn";                        // シューズ摩耗
   // サッカー
   soccerStud?: "turf" | "firm" | "soft" | "ag";  // スタッド種別
+  soccerStudMaterial?: "rubber" | "plastic" | "metal"; // スタッド材質
   soccerBallSize?: 3 | 4 | 5;
   // バスケ
   basketballBallSize?: 5 | 6 | 7;
+  basketballBallMaterial?: "rubber" | "composite" | "leather"; // ボール材質
   basketballShoe?: "cushioned" | "normal" | "worn"; // すり減り含む
+  courtSurface?: "wood" | "rubber" | "concrete" | "asphalt";
   // テニス・バドミントン
   racketWeightG?: number;               // ラケット重量 g
   stringTensionLb?: number;             // ガット張力 lb
+  stringMaterial?: "gut" | "nylon" | "poly"; // ストリング素材
   // 水泳
   usesPaddles?: boolean;                // パドル使用
+  paddleSize?: "small" | "large";       // パドルサイズ（大は肩負荷大）
   usesFins?: boolean;                   // フィン使用
   // 体操
   gymApparatus?: "floor" | "vault" | "bars" | "beam" | "rings" | "rhythmic";
+  usesGrips?: boolean;                  // 手掌プロテクター（グリップ）使用
   // 共通: 道具のサイズが体格に合っていないと感じるか
   equipmentFitsPoorly?: boolean;
 }
@@ -84,6 +92,70 @@ export interface Result {
   vulnerableSites: string[]; // 骨端線部位
   bmi: number;
 }
+
+// ============================================================
+// 用語集（クリックで説明を表示するための辞書）
+// キーはUI本文中に現れる正確な表記。長いキーから優先マッチする。
+// ============================================================
+export const GLOSSARY: Record<string, string> = {
+  骨端線:
+    "成長期の骨の端にある軟骨層（成長板）。ここで骨が伸びる。強い衝撃や反復負荷で損傷すると成長障害や変形の原因になる。",
+  オーバーユース:
+    "同じ動作を過剰に繰り返すことで、骨・軟骨・腱に微小損傷が蓄積し痛みや障害を起こす状態。",
+  成長スパート:
+    "身長が急激に伸びる時期（男子12〜14歳、女子10〜12歳頃）。骨の伸びに筋腱が追いつかず、骨端線障害が起こりやすい。",
+  BMI:
+    "体重(kg) ÷ 身長(m)²。体格の指標。高すぎると関節への機械的負荷が増える。",
+
+  // 野球
+  野球肘:
+    "投球動作の繰り返しで肘の内側（上腕骨内側上顆）の骨端線に牽引・圧迫が加わり生じる障害。放置で離断性骨軟骨炎に進行することも。",
+  上腕骨内側上顆:
+    "肘の内側の骨のふくらみ。前腕屈筋群が付着し、投球時に強い牽引力を受ける。",
+  リトルリーグ肩:
+    "投球の繰り返しで上腕骨近位（肩側）の骨端線が離開する障害。10〜14歳に多い。",
+  上腕骨近位骨端線:
+    "肩に近い上腕骨の成長板。投球のねじれ負荷が集中する部位。",
+  変化球:
+    "カーブ・スライダー等、前腕の回内外や強い手首のひねりを伴う投球。成長期の肘に高負荷。",
+  軟式M: "中学生以上で使う一般軟式球。J号よりやや大きく重い。",
+  軟式J: "小学生用の軟式球。M号より小さく軽い。",
+  準硬式: "硬式に近い構造の軟式球（H号）。反発が強く肘・肩への負荷は硬式に近い。",
+
+  // ランニング／サッカー
+  オスグッド:
+    "膝下（脛骨粗面）の骨端に牽引力が繰り返し加わり、痛み・隆起を起こす障害。ジャンプ・ダッシュを繰り返す10〜15歳に多い。",
+  脛骨粗面: "膝のすぐ下、脛骨前面のふくらみ。大腿四頭筋の腱（膝蓋腱）が付着する。",
+  シーバー病:
+    "踵骨（かかと）の骨端に、アキレス腱の牽引と着地衝撃が繰り返し加わる障害。8〜12歳の活動的な子に多い。",
+  踵骨骨端: "かかとの骨の成長板。アキレス腱が付着する部位。",
+  下前腸骨棘:
+    "骨盤前面の突起。大腿直筋が付着し、キック動作の繰り返しで剥離骨折を起こすことがある。",
+
+  // バスケ
+  シンディング・ラーセン:
+    "膝蓋骨の下端（下極）の骨端に牽引が繰り返し加わり痛みを起こす障害。ジャンプ競技に多い。",
+  膝蓋骨下極: "膝のお皿（膝蓋骨）の下端。膝蓋腱が付着する部位。",
+
+  // テニス・体操
+  上腕骨外側上顆:
+    "肘の外側の骨のふくらみ。前腕伸筋群が付着し、テニスのバックハンド等で牽引される（テニス肘）。",
+  橈骨遠位骨端線:
+    "手首側の橈骨（前腕の親指側の骨）の成長板。体操の跳躍・支持動作で圧迫される（体操手関節）。",
+  水泳肩:
+    "反復するストロークで肩関節周囲に炎症・インピンジメントを起こす障害。パドル使用で顕著に悪化する。",
+  腰椎分離:
+    "腰椎の後方部（椎弓）に反復ストレスで疲労骨折が生じる障害。反り動作の多い競技で好発。",
+
+  // 道具用語
+  スパイク: "靴底に突起（スタッド／ピン）がある競技靴。グリップは強いが着地衝撃が増える。",
+  スタッド: "サッカーシューズの靴底突起。FG=固い天然芝、SG=軟弱ピッチ、AG=人工芝、TF=トレーニング用の分類がある。",
+  ミニマル: "ソールが薄くクッションの少ないシューズ。地面反力が直接下肢に伝わる。",
+  ポリエステルストリング:
+    "テニスの高剛性ストリング（いわゆるポリ）。ボールの喰い付きは良いが振動吸収が悪く肘・手関節への衝撃が大きい。",
+  グリップ:
+    "体操競技で鉄棒・段違い・つり輪で手掌に着ける保護具。手のひらの摩擦・水泡を減らし手関節負荷も軽減する。",
+};
 
 const AGE_PITCH_LIMIT: { max: number; day: number; week: number }[] = [
   { max: 8,  day: 50,  week: 200 },
@@ -126,25 +198,40 @@ function recommendedRacketWeight(age: number): number {
   return 300;
 }
 
+// 野球ボール種別の負荷係数（軟式Jを基準1.0とした相対）
+const BALL_LOAD: Record<NonNullable<Equipment["ballType"]>, { score: number; label: string; detail: string }> = {
+  softJ: { score: 0, label: "軟式J号球", detail: "小学生用軟式球。反発・質量とも最小で骨端線負荷は最も低い。" },
+  softM: { score: 3, label: "軟式M号球", detail: "中学生以上の一般軟式球。J号より一回り大きく反発もやや強い。" },
+  semi:  { score: 10, label: "準硬式球（H号）", detail: "硬式に近い反発と質量。中学以上向けで肘・肩負荷は硬式に迫る。" },
+  hard:  { score: 15, label: "硬式球", detail: "反発と質量が大きく、投球あたりの肘・肩の骨端線への衝撃が顕著に増加する。" },
+};
+
 function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
   const eq = i.equipment;
   if (!eq) return;
 
   // 野球
   if (i.sport === "baseball") {
-    if (eq.ballType === "hard" && i.age <= 12) {
+    if (eq.ballType) {
+      const b = BALL_LOAD[eq.ballType];
+      // 12歳以下 × 硬式/準硬式は追加リスク
+      const ageBoost = i.age <= 12 && (eq.ballType === "hard" || eq.ballType === "semi") ? 5 : 0;
+      if (b.score + ageBoost > 0) {
+        factors.push({
+          label: `${b.label}の使用${ageBoost ? "（12歳以下）" : ""}`,
+          score: b.score + ageBoost,
+          detail: b.detail + (ageBoost ? " 小学生年代では原則軟式球が推奨される。" : ""),
+        });
+        if (ageBoost) recs.push("小学生年代では軟式（J号/M号）の使用を推奨します。");
+      }
+    }
+    if (eq.throwsBreakingBall && i.age <= 15) {
       factors.push({
-        label: "硬式球の使用（12歳以下）",
-        score: 15,
-        detail: "硬式球は反発と質量が大きく、肘・肩の骨端線に加わる衝撃が軟式より顕著に増加します。",
+        label: "変化球の投球",
+        score: i.age <= 12 ? 15 : 8,
+        detail: "変化球は前腕の回内・強いひねりを伴い、成長期の肘（上腕骨内側上顆）への負荷が大きい。",
       });
-      recs.push("小学生年代では原則軟式球の使用が推奨されます。硬式使用時は投球数をさらに抑えてください。");
-    } else if (eq.ballType === "hard") {
-      factors.push({
-        label: "硬式球の使用",
-        score: 5,
-        detail: "硬式球は投球あたりの関節負荷が大きいため管理が重要です。",
-      });
+      recs.push("骨端線閉鎖前（概ね中学生まで）はストレート中心の練習を推奨します。");
     }
     if (eq.batWeightG != null && eq.batWeightG > 0) {
       const rec = recommendedBatWeight(i.age);
@@ -153,16 +240,28 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
         factors.push({
           label: "バットが体格に対して重い",
           score: Math.min(15, 6 + Math.round(over / 40)),
-          detail: `${i.age}歳の目安 ${rec}g に対し ${eq.batWeightG}g。スイングで腰椎・手関節・肘への負荷が増えます。`,
+          detail: `${i.age}歳の目安 ${rec}g に対し ${eq.batWeightG}g。スイングで腰椎・手関節・肘への負荷が増える。`,
         });
         recs.push(`バット重量を目安 ${rec}g 前後に見直してください。`);
       }
     }
     if (eq.batType === "metal" && i.age <= 12) {
       factors.push({
-        label: "金属バットによる反発負荷",
+        label: "金属バットの打球衝撃",
         score: 4,
-        detail: "金属バットは打球衝撃が手・手関節の骨端線に伝わりやすい傾向があります。",
+        detail: "金属バットは打球衝撃が手・手関節の骨端線（橈骨遠位骨端線）に伝わりやすい。",
+      });
+    } else if (eq.batType === "composite" && i.age <= 12) {
+      factors.push({
+        label: "複合（カーボン）バットの反発",
+        score: 6,
+        detail: "複合バットは反発係数が高く、スイング時のしなりと打球衝撃で手関節・肘への負荷が金属より大きい傾向。",
+      });
+    } else if (eq.batType === "wood" && i.age <= 10) {
+      factors.push({
+        label: "木製バットの重量負荷",
+        score: 3,
+        detail: "木製バットは重量バランスが手元寄りで、幼年齢では手関節を痛めやすい。",
       });
     }
   }
@@ -173,23 +272,43 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
       factors.push({
         label: "薄底・ミニマルシューズ",
         score: 10,
-        detail: "クッション性が低く、踵骨骨端（シーバー病）や脛骨のストレスが増加します。",
+        detail: "クッション性が低く、踵骨骨端（シーバー病）や脛骨のストレスが増加する。",
       });
       recs.push("成長期はクッション性のあるジュニア用シューズを推奨します。");
-    } else if (eq.runningShoe === "spike" && i.age <= 12) {
+    } else if (eq.runningShoe === "spike") {
       factors.push({
-        label: "スパイクの常用（12歳以下）",
-        score: 8,
-        detail: "スパイクはアキレス腱・踵骨骨端への衝撃が強くなります。",
+        label: i.age <= 12 ? "スパイクの常用（12歳以下）" : "スパイクの常用",
+        score: i.age <= 12 ? 10 : 5,
+        detail: "スパイクはピンによる着地衝撃の集中と前足部荷重の増加で、アキレス腱・踵骨骨端への衝撃が強い。",
+      });
+    } else if (eq.runningShoe === "normal") {
+      factors.push({
+        label: "クッション標準のシューズ",
+        score: 2,
+        detail: "特別高くも低くもないが、ジュニア用の厚めクッションの方が骨端線には優しい。",
       });
     }
-    if (eq.runningSurface === "concrete" || eq.runningSurface === "road") {
+    if (eq.shoeWear === "worn") {
       factors.push({
-        label: "硬い路面での走行",
+        label: "シューズの摩耗",
         score: 8,
-        detail: "コンクリート・アスファルトは衝撃吸収が少なく下肢骨端線への負荷が大きくなります。",
+        detail: "ミッドソールが潰れたシューズは衝撃吸収が失われ、下肢骨端線への衝撃が直接伝わる。",
       });
-      recs.push("週の一定割合はトラックや土・芝など柔らかい路面での練習に置き換えましょう。");
+      recs.push("走行距離500〜800kmを目安にシューズを交換してください。");
+    }
+    if (eq.runningSurface === "concrete") {
+      factors.push({
+        label: "コンクリート路面での走行",
+        score: 10,
+        detail: "コンクリートは最も硬く、着地衝撃の吸収がほぼない。下肢骨端線への負荷が最大級。",
+      });
+      recs.push("週の一定割合はトラックや土・芝など柔らかい路面に置き換えましょう。");
+    } else if (eq.runningSurface === "road") {
+      factors.push({
+        label: "舗装路（アスファルト）での走行",
+        score: 6,
+        detail: "コンクリートよりはわずかに柔らかいが、繰り返しの着地で下肢骨端線に負荷が蓄積する。",
+      });
     }
   }
 
@@ -197,19 +316,39 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
   if (i.sport === "soccer") {
     if (eq.soccerStud === "soft" || eq.soccerStud === "firm") {
       factors.push({
-        label: "固定式スタッド（FG/SG）",
-        score: 6,
-        detail: "固定スタッドは踵・膝への突き上げが強く、シーバー病・オスグッドのリスクが増加します。",
+        label: eq.soccerStud === "soft" ? "SGスパイク（軟弱ピッチ用）" : "FGスパイク（固い天然芝用）",
+        score: eq.soccerStud === "soft" ? 8 : 6,
+        detail: "固定スタッドは接地面積が小さくスタッドが刺さるため、踵・膝への突き上げが強く、シーバー病・オスグッドのリスクが増加する。",
       });
-      recs.push("普段練習では人工芝用（AG）やターフシューズを検討してください。");
+      recs.push("普段練習では人工芝用（AG）やトレシュー（TF）を検討してください。");
+    } else if (eq.soccerStud === "ag") {
+      factors.push({
+        label: "AGスパイク（人工芝用）",
+        score: 2,
+        detail: "多点接地でFG/SGより衝撃分散に優れるが、TFよりは硬い。",
+      });
+    }
+    if (eq.soccerStudMaterial === "metal") {
+      factors.push({
+        label: "金属スタッド",
+        score: 8,
+        detail: "金属スタッドは変形せず衝撃をそのまま骨端線に伝える。成長期は原則非推奨。",
+      });
+      recs.push("成長期のジュニアには樹脂スタッドを推奨します。");
     }
     if (eq.soccerBallSize === 5 && i.age <= 11) {
       factors.push({
         label: "5号球の使用（11歳以下）",
         score: 8,
-        detail: "5号球は体格に対して重く、股関節・下前腸骨棘・膝への負荷が大きくなります。",
+        detail: "5号球は体格に対して重く、キック時の股関節・下前腸骨棘・膝への負荷が大きい。",
       });
       recs.push(`${i.age}歳では4号球の使用が推奨されます。`);
+    } else if (eq.soccerBallSize === 4 && i.age <= 7) {
+      factors.push({
+        label: "4号球の使用（7歳以下）",
+        score: 4,
+        detail: "低学年では3号球の方が体格に合う。",
+      });
     }
   }
 
@@ -219,17 +358,44 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
       factors.push({
         label: "7号球の使用（11歳以下）",
         score: 6,
-        detail: "7号球は重く、手関節・指の骨端線への負荷が増えます。",
+        detail: "7号球は重く、手関節・指の骨端線（橈骨遠位骨端線）への負荷が増える。",
       });
       recs.push(`${i.age}歳では5号または6号球が推奨されます。`);
+    }
+    if (eq.basketballBallMaterial === "leather") {
+      factors.push({
+        label: "天然皮革ボール",
+        score: 3,
+        detail: "天然皮革は重く反発も強め。指・手関節への突き指リスクや骨端線負荷がやや高い。",
+      });
+    } else if (eq.basketballBallMaterial === "rubber") {
+      factors.push({
+        label: "ゴムボール（屋外用）",
+        score: 4,
+        detail: "ゴムボールは硬く反発が強い。屋外の硬い床面と合わさると衝撃が指・手関節に集中する。",
+      });
     }
     if (eq.basketballShoe === "worn") {
       factors.push({
         label: "シューズのすり減り",
         score: 8,
-        detail: "クッションが劣化したシューズはジャンプ着地衝撃が膝・踵に直接伝わります。",
+        detail: "クッションが劣化したシューズはジャンプ着地衝撃が膝・踵に直接伝わる（シンディング・ラーセン、シーバー病）。",
       });
       recs.push("ミッドソールが潰れたシューズは早めに交換してください。");
+    }
+    if (eq.courtSurface === "concrete" || eq.courtSurface === "asphalt") {
+      factors.push({
+        label: eq.courtSurface === "concrete" ? "コンクリート床面" : "アスファルト床面",
+        score: 10,
+        detail: "屋外の硬い床面はジャンプ着地衝撃の吸収がほぼなく、膝蓋骨下極・脛骨粗面へのストレスが大きい。",
+      });
+      recs.push("週に数回は体育館などの木製床面での練習を確保してください。");
+    } else if (eq.courtSurface === "rubber") {
+      factors.push({
+        label: "ゴム系床面",
+        score: 3,
+        detail: "木製床より硬めだがアスファルトよりは緩衝性がある。",
+      });
     }
   }
 
@@ -242,7 +408,7 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
         factors.push({
           label: "ラケットが体格に対して重い",
           score: Math.min(15, 6 + Math.round(over / 15)),
-          detail: `${i.age}歳の目安 ${rec}g に対し ${eq.racketWeightG}g。上腕骨外側上顆・手関節への負荷が増加します。`,
+          detail: `${i.age}歳の目安 ${rec}g に対し ${eq.racketWeightG}g。上腕骨外側上顆・手関節への負荷が増加する。`,
         });
         recs.push(`ラケット重量を目安 ${rec}g 前後、またはジュニア用モデルに変更してください。`);
       }
@@ -251,27 +417,42 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
       factors.push({
         label: "ガット張力が高い",
         score: 6,
-        detail: `${eq.stringTensionLb}lb は成長期には硬く、肘・手関節への衝撃が増えます。`,
+        detail: `${eq.stringTensionLb}lb は成長期には硬く、肘・手関節への衝撃が増える。`,
       });
       recs.push("成長期はガット張力を 45–52lb 程度に緩めることを推奨します。");
+    }
+    if (eq.stringMaterial === "poly") {
+      factors.push({
+        label: "ポリエステルストリング",
+        score: 10,
+        detail: "ポリは反発と喰い付きが強いが振動吸収が悪く、上腕骨外側上顆（テニス肘）への衝撃が顕著。成長期は非推奨。",
+      });
+      recs.push("成長期はナチュラルガットまたはナイロン系ストリングを推奨します。");
+    } else if (eq.stringMaterial === "gut") {
+      factors.push({
+        label: "ナチュラルガット",
+        score: -3,
+        detail: "振動吸収に優れ、肘・手関節への衝撃が最も小さい（軽減要因）。",
+      });
     }
   }
 
   // 水泳
   if (i.sport === "swimming") {
     if (eq.usesPaddles) {
+      const large = eq.paddleSize === "large";
       factors.push({
-        label: "パドル使用",
-        score: 10,
-        detail: "パドルは肩へのトルクを大幅に増やし、成長期の水泳肩リスクを高めます。",
+        label: large ? "大型パドル使用" : "パドル使用",
+        score: large ? 15 : 10,
+        detail: "パドルは水を掴む面積を拡げ肩へのトルクを大幅に増加させる。大型ほど水泳肩リスクが高い。",
       });
-      recs.push("成長期のパドル使用は短時間・低頻度に留めてください。");
+      recs.push("成長期のパドル使用は短時間・低頻度、可能なら小型に留めてください。");
     }
     if (eq.usesFins) {
       factors.push({
         label: "フィン使用",
         score: 4,
-        detail: "フィンは足関節・膝への負荷を増やします。使用時間を管理してください。",
+        detail: "フィンは足関節・膝への負荷を増やす。使用時間を管理する。",
       });
     }
   }
@@ -282,14 +463,27 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
       factors.push({
         label: "手関節高負荷種目",
         score: 12,
-        detail: "跳馬・鉄棒・つり輪は橈骨遠位骨端線への衝撃・圧迫が大きい種目です。",
+        detail: "跳馬・鉄棒・つり輪は橈骨遠位骨端線への衝撃・圧迫が大きい種目。",
       });
       recs.push("種目後の手関節ケア（アイシング・ストレッチ）と週内での種目分散を行ってください。");
+      if (!eq.usesGrips && (eq.gymApparatus === "bars" || eq.gymApparatus === "rings")) {
+        factors.push({
+          label: "グリップ（手掌プロテクター）未使用",
+          score: 5,
+          detail: "グリップは手掌摩擦・水泡だけでなく手関節への剪断負荷も軽減する。鉄棒・つり輪では原則使用が推奨される。",
+        });
+      } else if (eq.usesGrips) {
+        factors.push({
+          label: "グリップ使用",
+          score: -3,
+          detail: "手掌保護と手関節負荷の軽減効果あり（軽減要因）。",
+        });
+      }
     } else if (eq.gymApparatus === "floor") {
       factors.push({
         label: "床運動の反復",
         score: 6,
-        detail: "着地衝撃が下肢骨端線に繰り返し加わります。",
+        detail: "着地衝撃が下肢骨端線に繰り返し加わる。",
       });
     }
   }
@@ -299,7 +493,7 @@ function evaluateEquipment(i: Input, factors: Factor[], recs: string[]) {
     factors.push({
       label: "道具が体格に合っていない",
       score: 8,
-      detail: "サイズ不適合な道具は不自然なフォームを誘発し、局所への偏った負荷を生みます。",
+      detail: "サイズ不適合な道具は不自然なフォームを誘発し、局所への偏った負荷を生む。",
     });
     recs.push("成長に合わせて年1回は道具のサイズ・重量を見直してください。");
   }
@@ -402,7 +596,7 @@ export function calculateRisk(i: Input): Result {
   // 道具評価
   evaluateEquipment(i, factors, recs);
 
-  const totalScore = factors.reduce((s, f) => s + f.score, 0);
+  const totalScore = Math.max(0, factors.reduce((s, f) => s + f.score, 0));
 
   let level: RiskLevel;
   let levelLabel: string;
