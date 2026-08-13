@@ -1,0 +1,348 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "my-app-mcp",
+      "version": "0.1.0",
+      "title": "骨端線チェッカー"
+    },
+    "tools": [
+      {
+        "name": "assess_bone_load",
+        "title": "成長期の骨負担を判定",
+        "description": "年齢・性別・体格・練習量・用具情報から、成長期アスリートの骨端線（成長板）への負担スコアとリスクレベル、要因の内訳、推奨アクションを返します。医学的診断ではありません。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "age": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 25,
+              "description": "年齢（歳）"
+            },
+            "sex": {
+              "type": "string",
+              "enum": [
+                "male",
+                "female"
+              ],
+              "description": "生物学的性別"
+            },
+            "height": {
+              "type": "number",
+              "minimum": 80,
+              "maximum": 230,
+              "description": "身長 cm"
+            },
+            "weight": {
+              "type": "number",
+              "minimum": 15,
+              "maximum": 200,
+              "description": "体重 kg"
+            },
+            "sport": {
+              "type": "string",
+              "enum": [
+                "baseball",
+                "running",
+                "soccer",
+                "basketball",
+                "tennis",
+                "swimming",
+                "gymnastics",
+                "other"
+              ],
+              "description": "競技"
+            },
+            "hoursPerWeek": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 60,
+              "description": "週あたりの練習時間"
+            },
+            "daysPerWeek": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 7,
+              "description": "週あたりの練習日数"
+            },
+            "restDaysPerWeek": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 7,
+              "description": "週あたりの完全休養日数"
+            },
+            "pitchesPerDay": {
+              "description": "野球のみ: 1日の投球数",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 400
+            },
+            "hasPain": {
+              "type": "boolean",
+              "description": "痛みや違和感があるか"
+            },
+            "recentGrowthSpurt": {
+              "type": "boolean",
+              "description": "直近半年で急激に身長が伸びたか"
+            },
+            "menstrualIrregularity": {
+              "description": "女子のみ: 3か月以上の無月経・月経不順があるか",
+              "type": "boolean"
+            },
+            "equipment": {
+              "description": "競技ごとの用具情報（すべて任意）",
+              "type": "object",
+              "properties": {
+                "ballType": {
+                  "type": "string",
+                  "enum": [
+                    "softM",
+                    "softJ",
+                    "semi",
+                    "hard"
+                  ]
+                },
+                "batWeightG": {
+                  "type": "number"
+                },
+                "batType": {
+                  "type": "string",
+                  "enum": [
+                    "wood",
+                    "metal",
+                    "composite"
+                  ]
+                },
+                "throwsBreakingBall": {
+                  "type": "boolean"
+                },
+                "runningShoe": {
+                  "type": "string",
+                  "enum": [
+                    "cushioned",
+                    "normal",
+                    "minimal",
+                    "spike"
+                  ]
+                },
+                "runningSurface": {
+                  "type": "string",
+                  "enum": [
+                    "track",
+                    "road",
+                    "trail",
+                    "concrete"
+                  ]
+                },
+                "shoeWear": {
+                  "type": "string",
+                  "enum": [
+                    "new",
+                    "normal",
+                    "worn"
+                  ]
+                },
+                "soccerStud": {
+                  "type": "string",
+                  "enum": [
+                    "turf",
+                    "firm",
+                    "soft",
+                    "ag"
+                  ]
+                },
+                "soccerStudMaterial": {
+                  "type": "string",
+                  "enum": [
+                    "rubber",
+                    "plastic",
+                    "metal"
+                  ]
+                },
+                "soccerBallSize": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "const": 3
+                    },
+                    {
+                      "type": "number",
+                      "const": 4
+                    },
+                    {
+                      "type": "number",
+                      "const": 5
+                    }
+                  ]
+                },
+                "basketballBallSize": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "const": 5
+                    },
+                    {
+                      "type": "number",
+                      "const": 6
+                    },
+                    {
+                      "type": "number",
+                      "const": 7
+                    }
+                  ]
+                },
+                "basketballBallMaterial": {
+                  "type": "string",
+                  "enum": [
+                    "rubber",
+                    "composite",
+                    "leather"
+                  ]
+                },
+                "basketballShoe": {
+                  "type": "string",
+                  "enum": [
+                    "cushioned",
+                    "normal",
+                    "worn"
+                  ]
+                },
+                "courtSurface": {
+                  "type": "string",
+                  "enum": [
+                    "wood",
+                    "rubber",
+                    "concrete",
+                    "asphalt"
+                  ]
+                },
+                "racketWeightG": {
+                  "type": "number"
+                },
+                "stringTensionLb": {
+                  "type": "number"
+                },
+                "stringMaterial": {
+                  "type": "string",
+                  "enum": [
+                    "gut",
+                    "nylon",
+                    "poly"
+                  ]
+                },
+                "usesPaddles": {
+                  "type": "boolean"
+                },
+                "paddleSize": {
+                  "type": "string",
+                  "enum": [
+                    "small",
+                    "large"
+                  ]
+                },
+                "usesFins": {
+                  "type": "boolean"
+                },
+                "gymApparatus": {
+                  "type": "string",
+                  "enum": [
+                    "floor",
+                    "vault",
+                    "bars",
+                    "beam",
+                    "rings",
+                    "rhythmic"
+                  ]
+                },
+                "usesGrips": {
+                  "type": "boolean"
+                },
+                "equipmentFitsPoorly": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "required": [
+            "age",
+            "sex",
+            "height",
+            "weight",
+            "sport",
+            "hoursPerWeek",
+            "daysPerWeek",
+            "restDaysPerWeek",
+            "hasPain",
+            "recentGrowthSpurt"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_sports",
+        "title": "対応競技の一覧",
+        "description": "判定ツールで指定できる競技コードと日本語名の一覧を返します。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "lookup_term",
+        "title": "専門用語を調べる",
+        "description": "「骨端線」「オーバーユース」「REDs」などアプリ内で使われる専門用語の説明を返します。termを省略すると全用語を一覧します。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "term": {
+              "description": "調べたい用語（部分一致可）。省略で全件",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_sources",
+        "title": "参考ガイドライン・出典",
+        "description": "判定ロジックが参照しているガイドライン・研究の出典一覧を返します。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
