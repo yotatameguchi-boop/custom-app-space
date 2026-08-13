@@ -5,7 +5,7 @@ import listSourcesTool from "./tools/list-sources";
 import lookupTermTool from "./tools/lookup-term";
 
 export default defineMcp({
-  name: "骨端線チェッカー".toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "my-app-mcp",
+  name: "my-app-mcp",
   title: "骨端線チェッカー",
   version: "0.1.0",
   instructions:
