@@ -14,7 +14,134 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assessments: {
+        Row: {
+          age: number
+          athlete_id: string | null
+          bmi: number | null
+          created_at: string
+          id: string
+          input: Json
+          is_shared: boolean
+          level: string
+          level_label: string
+          result: Json
+          sex: string
+          share_token: string
+          sport: string
+          total_score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age: number
+          athlete_id?: string | null
+          bmi?: number | null
+          created_at?: string
+          id?: string
+          input: Json
+          is_shared?: boolean
+          level: string
+          level_label: string
+          result: Json
+          sex: string
+          share_token?: string
+          sport: string
+          total_score: number
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          age?: number
+          athlete_id?: string | null
+          bmi?: number | null
+          created_at?: string
+          id?: string
+          input?: Json
+          is_shared?: boolean
+          level?: string
+          level_label?: string
+          result?: Json
+          sex?: string
+          share_token?: string
+          sport?: string
+          total_score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessments_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "athletes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      athletes: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          height: number | null
+          id: string
+          name: string
+          note: string | null
+          sex: string
+          sport: string
+          updated_at: string
+          user_id: string
+          weight: number | null
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          height?: number | null
+          id?: string
+          name: string
+          note?: string | null
+          sex?: string
+          sport?: string
+          updated_at?: string
+          user_id?: string
+          weight?: number | null
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          height?: number | null
+          id?: string
+          name?: string
+          note?: string | null
+          sex?: string
+          sport?: string
+          updated_at?: string
+          user_id?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
